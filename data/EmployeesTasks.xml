@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EmployeesTasks>
+    <EmployeeTasks empId="7">
+        <Task id="7.1" assignedOn="2018-9-2" assignedAt="" dueDate="2018-9-20" finishedOn="" finishedAt="">
+            <Description>التواصل مع المدقق</Description>
+            <Attachments>
+                <Attachment path=""></Attachment>
+            </Attachments>
+            <AssigneeNotes>
+                <Note addedOn="" addedAt=""></Note>
+            </AssigneeNotes>
+            <Progress val="100" date="" time="">
+                <Note></Note>
+            </Progress>
+            <Evaluation></Evaluation>
+        </Task>
+        <Task id="7.2" assignedOn="2018-9-3" assignedAt="" dueDate="2018-9-10" finishedOn="" finishedAt="">
+            <Description>حصر المعدات الإلكترونية</Description>
+            <Attachments>
+                <Attachment path=""></Attachment>
+            </Attachments>
+            <AssigneeNotes>
+                <Note addedOn="" addedAt=""></Note>
+            </AssigneeNotes>
+            <Progress val="70" date="" time="">
+                <Note></Note>
+            </Progress>
+            <Evaluation></Evaluation>
+        </Task>
+        <Task id="7.3" assignedOn="2018-9-5" assignedAt="" dueDate="2018-10-12" finishedOn="" finishedAt="">
+            <Description>تعديل كود برنامج إدارةالمهام</Description>
+            <Attachments>
+                <Attachment path=""></Attachment>
+            </Attachments>
+            <AssigneeNotes>
+                <Note addedOn="" addedAt=""></Note>
+            </AssigneeNotes>
+            <Progress val="10" date="" time="">
+                <Note></Note>
+            </Progress>
+            <Evaluation></Evaluation>
+        </Task>
+    </EmployeeTasks>
+    
+</EmployeesTasks>

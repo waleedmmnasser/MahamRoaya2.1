@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Employees>
+    <Employee id="1" firstName="وليد" fatherName="محمد ناصر" familyName="الغدامسي" natId="2" jobId="2"
+        userName="waleed" password="">
+    </Employee>
+    <Employee id="2" firstName="عباس" fatherName="" familyName="شريفة" natId="1" jobId="3" managerId="1"
+        userName="abbas" password="">
+    </Employee>
+    <Employee id="3" firstName="أيهم" fatherName="محمد" familyName="النقيب" natId="1" jobId="4" managerId="1"
+        userName="ayham" password="">
+    </Employee>
+    <Employee id="4" firstName="محمد" fatherName="محمود" familyName="خير" natId="1" jobId="5" managerId="1"
+        userName="mkhair" password="">
+    </Employee>
+    <Employee id="5" firstName="نجيب" fatherName="أحمد" familyName="الغريب" natId="4" jobId="6" managerId="3"
+        userName="najeeb" password="">
+    </Employee>
+    <Employee id="6" firstName="جديد" fatherName="جميل" familyName="ممتاز" natId="3" jobId="4" managerId="3"
+        userName="jadeed" password="">
+    </Employee>
+    <Employee id="7" firstName="إيمان" fatherName="" familyName="الزواري" natId="3" jobId="4" managerId="1"
+        userName="iman" password="">
+    </Employee>
+    <Employee id="8" firstName="يحيى" fatherName="" familyName="الخالد" natId="3" jobId="4" managerId="7"
+        userName="yahya" password="">
+    </Employee>
+    <Employee id="9" firstName="هدى" fatherName="" familyName="بوصيري" natId="3" jobId="4" managerId="7"
+        userName="hoda" password="">
+    </Employee>
+    <Employee id="10" firstName="عبد السلام" fatherName="" familyName="الفيصل" natId="3" jobId="4" managerId="1"
+        userName="abdussalam" password="">
+    </Employee>
+    <Employee id="11" firstName="كمال" fatherName="" familyName="العسلي" natId="3" jobId="4" managerId="10"
+        userName="kamal" password="">
+    </Employee>
+    <Employee id="12" firstName="خليل" fatherName="" familyName="اللداوي" natId="3" jobId="4" managerId="10"
+        userName="khaleel" password="">
+    </Employee>
+    <Employee id="13" firstName="عمرو" fatherName="" familyName="وحود" natId="3" jobId="4" managerId="10"
+        userName="amr" password="">
+    </Employee>
+</Employees>

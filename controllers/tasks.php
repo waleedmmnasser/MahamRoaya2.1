@@ -35,7 +35,7 @@ class Tasks extends Controller
                             "<td style='width:80px'>" . $notesEdtr . "</td>" .
                             "</tr>";
                 */
-                $ownTasksHtml .= $this->createTaskRow($aTask);
+                $ownTasksHtml .= $this->createTaskRow($aTask, true);
             }
         }
 
@@ -66,7 +66,7 @@ class Tasks extends Controller
             $ownTasksHtml = "";
 
             foreach($ownTasks as $aTask)
-                $ownTasksHtml .= $this->createTaskRow($aTask);
+                $ownTasksHtml .= $this->createTaskRow($aTask, true);
         }
 
         $this->view->empCrntTasks = $ownTasksHtml;
@@ -86,7 +86,7 @@ class Tasks extends Controller
             $allTasksHtml = "";
 
             foreach($empTasks as $emTk)
-                $allTasksHtml .= $this->createTaskRow($emTk);
+                $allTasksHtml .= $this->createTaskRow($emTk, true);
             
             echo $allTasksHtml;
         }
@@ -104,7 +104,7 @@ class Tasks extends Controller
             $theTasks = "";
 
             foreach($empDatedTasks as $emTk)
-                $theTasks .= $this->createTaskRow($emTk);
+                $theTasks .= $this->createTaskRow($emTk, true);
             
             echo $theTasks;
         }
@@ -112,7 +112,7 @@ class Tasks extends Controller
 
     public function getSubordinateCurrentTasks()
     {
-        $empTasks = XmlHelper::getEmployeeCurrentTasks($empId);
+        $empTasks = XmlHelper::getEmployeeCurrentTasks($_POST["subEmpId"]);
 
         if (!is_null($empTasks) && $empTasks->length > 0)
         {
@@ -133,28 +133,33 @@ class Tasks extends Controller
                             "<td><input id='delTask'" . $taskId . "' type='button' /></td>" .
                             "</tr>";
                 */
-                $theTasks .= $this->createTaskRow($emTk);
+                $theTasks .= $this->createTaskRow($emTk, false);
             }
             
             echo $theTasks;
         }
     }
 
-    private function createTaskRow($aTask)
+    private function createTaskRow($aTask, $isOwnTask)
     {
         $taskId = $aTask->getId();
-        $prgrsEdtr = "<input id='prgr" . $taskId . "' type='text' maxlength='3' size='2' value='" 
+        $prgrsEdtr = "<input id='prgr" . $taskId . "' type='text' maxlength='3' style='width:20%' value='" 
                     . $aTask->getProgress() . "' />";
-        $notesEdtr = "<input id='note" . $taskId . "' type='text' maxlength='100' size='50' value='" 
+        $notesEdtr = "<input id='note" . $taskId . "' type='text' maxlength='150' value='" 
                     . $aTask->getNotes() . "' />";
         $taskRow = "<tr><td>" . $aTask->getDescription() . "</td>" .
                     "<td>" . $aTask->getAssignDate() . "</td>" .
-                    "<td>" . $aTask->getDueDate() . "</td>" .
+                    "<td>" . $aTask->getDueDate() . " - " . $aTask->getDueTime() . "</td>" .
                     "<td>" . $prgrsEdtr . "</td>" .
-                    "<td>" . $notesEdtr . "</td>" .
-                    //"<td><input id='delayTask'" . $taskId . "' type='button' /></td>" .
-                    //"<td><input id='delTask'" . $taskId . "' type='button' /></td>" .
-                    "</tr>";
+                    "<td>" . $notesEdtr . "</td>";
+        if ($isOwnTask)
+            $taskRow .= "<td><button class='w3-btn w3-white w3-border w3-small' title='احفظ' id='updateOwnTask'" . $taskId . "'>"
+                        . "<img src='". URL ."public/images/SaveIcon3.jpg' width='20'></button></td>";
+        else
+            $taskRow .= "<td><button class='w3-btn w3-white w3-border w3-round-large' id='delayTask'" . $taskId . "' </button></td>" .
+                    "<td><button class='w3-btn w3-white w3-border w3-round-large' id='deleteTask'" . $taskId . "' </button></td>";
+
+        $taskRow .= "</tr>";
 
         return $taskRow;
     }
@@ -171,15 +176,27 @@ class Tasks extends Controller
         }
     }
 
-    public function addNew()
+    public function addNewTaskForSubordinate()
     {
         try
         {
+            echo "<br>Into addNewTaskForSubordinate: " . $_POST["subOrdId"];
 
+            $newTask = new Task();
+            $newTask->setEmpId($_POST["subOrdId"]);
+            $newTask->setDescription($_POST["desc"]); $newTask->setDueDate($_POST["dueDate"]);
+            $newTask->setDueTime($_POST["dueTime"]); $newTask->setNotes($_POST["notes"]);
+
+            echo "<br> Calling assignnewTask...";
+
+            if (XmlHelper::assignNewTask($newTask))
+                echo "حفظت المهمة بنجاح";
+            else
+                echo "حدث خطأ. من فضلك حاول مرة أخرى.";
         }
         catch(Exception $e)
         {
-            
+            echo "حدث خطأ. من فضلك حاول مرة أخرى.";
         }
     }
 

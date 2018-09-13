@@ -2,7 +2,7 @@
 
 class Task
 {
-    private $id, $empId, $assignDate, $assignTime, $dueDate, $description;
+    private $id, $empId, $assignDate, $assignTime, $dueDate, $dueTime, $description;
     private $attachments, $progress, $notes;
 
     /**
@@ -106,6 +106,26 @@ class Task
     }
 
     /**
+     * Get the value of dueTime
+     */ 
+    public function getDueTime()
+    {
+        return $this->dueTime;
+    }
+
+    /**
+     * Set the value of dueTime
+     *
+     * @return  self
+     */ 
+    public function setDueTime($dueTime)
+    {
+        $this->dueTime = $dueTime;
+
+        return $this;
+    }
+
+    /**
      * Get the value of description
      */ 
     public function getDescription()
@@ -183,5 +203,10 @@ class Task
         $this->notes = $notes;
 
         return $this;
+    }
+    
+    public function deserialize($xmlData)
+    {
+        
     }
 }

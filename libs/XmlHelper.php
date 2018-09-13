@@ -235,38 +235,58 @@ class XmlHelper
     {
         try
         {
+            echo "<br> Into assign: " .  $newTask->getEmpId();
+
             $empId = $newTask->getEmpId(); $empHasTasks = false;
 
-            $empTasks = self::$empsPath->query("//EmployeesTasks/EmployeeTasks[@empId='" . $empId . "']");
+            $empElms = self::$empsPath->query("//EmployeesTasks/EmployeeTasks[@empId='" . $empId . "']");
 
-            if ($empTasks->count() > 0)
+            var_dump($empElms);
+            
+            $theEmpElm = null; $idPart = 0;
+
+            if ($empElms->count() > 0)
             {
-                $lastTask = $empTasks->item($empTasks->length - 1);
-                $lastTaskId = $lastTask->getAttribute("id");
-                $idPart = intval(explode('.', $lastTaskId)[1]);
+                echo "<br>Getting last task id...";
+
+                $theEmpElm = $empElms->item(0);
+
+                if ($theEmpElm->childNodes->length > 0)
+                {
+                    $lastTask = $theEmpElm->lastChild;
+                    $lastTaskId = $lastTask->getAttribute("id");
+                    $idPart = intval(explode('.', $lastTaskId)[1]);
+                }
             }
             else
             {
-                $idPart = 0;
+                echo "<br>Creating element for emp...";
+
+                $theEmpElm = self::$tasksDoc->createElement('EmployeeTasks');
+                $theEmpElm->setAttribute("empId", $empId);
+                self::$tasksDoc->firstChild->appendChild($theEmpElm);
             }
             
+            echo "<br>Creating task element...";
+
             $newId = $idPart + 1;
-            $newTaskElm = $tasksDoc->createElement('Task');
+            $newTaskElm = self::$tasksDoc->createElement('Task');
             $newTaskElm->setAttribute('id', $empId . $newId);
-            $newTaskElm->setAttribute('assignedOn', date('j/n/Y'));
+            $newTaskElm->setAttribute('assignedOn', date('Y-n-j'));
             $newTaskElm->setAttribute('assignedAt', date('G:i:s'));
             $newTaskElm->setAttribute('dueDate', $newTask->getDueDate());
+            $newTaskElm->setAttribute('dueTime', $newTask->getDueTime());
 
-            $descElm = $tasksDoc->createElement('Description', $newTask->getDescription());
+            $descElm = self::$tasksDoc->createElement('Description', $newTask->getDescription());
             $newTaskElm->appendChild($descElm);
 
             if (!is_null($newTask->getAttachments()))
             {
-                $attachmentsElm = $tasksDoc->createElement('Attachments');
+                $attachmentsElm = self::$tasksDoc->createElement('Attachments');
 
                 foreach($newTask->getAttachments() as $attch)
                 {
-                    $attchElm = $tasksDoc->createElement('Attachment');
+                    $attchElm = self::$tasksDoc->createElement('Attachment');
                     $attchElm->setAttribute('path', $attch->getPath());
 
                     $attachmentsElm->appendChild($attchElm);
@@ -274,10 +294,20 @@ class XmlHelper
 
                 $newTaskElm->appendChild($attachmentsElm);
             }
+
+            echo "<br>Appending task to emp tasks...";
+
+            $theEmpElm->appendChild($newTaskElm);
+
+            echo "<br>Saving doc...";
+
+            self::$tasksDoc->save("data/EmployeesTasks.xml");
+            
+            return true;
         }
         catch(Exception $e)
         {
-
+            return false;
         }
     }
 
@@ -323,7 +353,8 @@ class XmlHelper
         {
             $empTasksElms = self::$tasksPath->query("//EmployeesTasks/EmployeeTasks[@empId=" . $empId . "]");
 
-            if ($empTasksElms != null && $empTasksElms->item(0)->childNodes->length > 0)
+            if ($empTasksElms != null && $empTasksElms->item(0) != null 
+                    && $empTasksElms->item(0)->childNodes->length > 0)
             {
                 //var_dump($empTasksElms->item(0));
                 //echo "<br> --- <br>";
@@ -464,6 +495,7 @@ class XmlHelper
             $aTask->setId($taskElm->getAttribute("id"));
             $aTask->setAssignDate($taskElm->getAttribute("assignedOn"));
             $aTask->setDueDate($taskElm->getAttribute("dueDate"));
+            $aTask->setDueTime($taskElm->getAttribute("dueTime"));
             $aTask->setDescription(self::getXmlElmVal($taskElm, "Description"));
             $aTask->setProgress($taskPrg);
 

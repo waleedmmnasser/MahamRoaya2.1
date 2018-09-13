@@ -22,7 +22,7 @@
                 <tr>
                     <th>وصف المهمة</th>
                     <th>تاريخ التكليف</th>
-                    <th>التاريخ المحدد للتسليم</th>
+                    <th>موعد التسليم</th>
                     <th style="width:30px">نسبة الإنجاز</th>
                     <th style="width:80px">ملاحظات</th>
                 </tr>
@@ -34,15 +34,13 @@
     </div>
 </div>
 <br>
-<input id="updateTasks" type='button' value="عدِّل"/>
-<br>
 <div id="updateMessage"></div>
-<br><br><br>
+<br><br>
 <label style="font-weight:bold; font-size:18px; text-decoration:underline">مهام الموظفين التابعين لك</label>
 <br><br>
 <?php if ($this->isManager) { ?>
     <label>اختر أحد الموظفين</label>
-    <select name="subordinatesList">
+    <select id="subordinatesList" name="subordinatesList">
         <?php
             foreach($this->subEmps as $emp)
                 echo "<option value='" . $emp->getId() . "'>" . $emp->getFullName() . "</option>";
@@ -65,16 +63,17 @@
         <tbody id="subOrdTasksTblBody"></tbody>
     </table>
     <br><br><br>
-    <div style="width:60%">
+    <div id="newSubOrdTaskDiv" style="width:60%" disabled>
         <div class="w3-border">
             <div class="w3-container w3-blue">
                 <h3>لإضافة مهمة جديدة</h3>
             </div>
             <form class="w3-container">
                 <label>الوصف</label><input class="w3-input" id="taskDesc" type="text" name="taskDesc" /><br>
+                <label>ساعة التسليم</label><input class="w3-input" id="taskDueTime" type="time" name="taskDueTime" /><br>
                 <label>التاريخ المحدد للتسليم</label><input class="w3-input" id="taskDueDate" type="date" name="taskDueDate" /><br>
                 <label>ملاحظات</label><input class="w3-input" id="taskNote" type="text" name="taskNote" /><br>
-                <button id="addNewTask" class="w3-btn w3-white w3-border w3-round-large">أضف</button>
+                <button id="addSubordNewTask" class="w3-btn w3-white w3-border w3-round-large">أضف</button>
             </form>
         </div>
     </div>
@@ -84,13 +83,15 @@
 <script>
     $(function(){
         $("#subordinatesList").change(function(){
-            alert($("#subordinatesList option:selected").val());
+            //alert($("#subordinatesList option:selected").val());
+
+            $("#newSubOrdTaskDiv").prop("disabled", false);
 
             $.ajax({
                     type: "POST",
                     url: "tasks/getSubordinateCurrentTasks",
                     //contentType: "application/json; charset=utf-8",
-                    data: $("#subordinatesList option:selected").val(),
+                    data: "subEmpId=" + $("#subordinatesList option:selected").val(),
                     //dataType: "json",
                 })
                 .done(function(data) {
@@ -152,27 +153,30 @@
             }
         });
 
-        $("#addNewTask").click(function(){
+        $("#addSubordNewTask").click(function(){
             try {
                 $("#taskAdditionMsg").html('');
-                //alert("User name: " + $("#login").val());
-                //alert($("#loginForm").serialize());
-                var newTask = {
-                    description: $("#taskDesc").val(),
-                    dueDate: $("#taskDueDate").val(),
-                    notes: $("#taskNote").val(),
-                };
+                alert("Saving subord task...");
+                //alert($("#subordinatesList option:selected").attr("value"));
+
+                var newTaskInfo = "subOrdId=" + $("#subordinatesList option:selected").val()
+                                + "&desc=" + $("#taskDesc").val()
+                                + "&dueDate=" + $("#taskDueDate").val() 
+                                + "&dueTime=" + $("#taskDueTime").val() 
+                                + "&notes=" + $("#taskNote").val();
+                
+                alert("Task: " + newTaskInfo);
                 
                 $.ajax({
                     type: "POST",
-                    url: "tasks/addNewTask",
+                    url: "tasks/addNewTaskForSubordinate",
                     //contentType: "application/json; charset=utf-8",
-                    data: newTask,
+                    data: newTaskInfo,
                     //dataType: "json",
                 })
                 .done(function(data) {
-                    //alert("Ajax done");
-                    //alert(data);
+                    alert("Back from server");
+                    alert(data);
                     if (!data.includes("<script>"))
                         $("#taskAdditionMsg").html(data);
                 })

@@ -1,44 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <EmployeesTasks>
     <EmployeeTasks empId="7">
-        <Task id="7.1" assignedOn="2018-9-2" assignedAt="" dueDate="2018-9-20" finishedOn="" finishedAt="">
+        <Task id="7.1" assignedOn="2018-9-2" assignedAt="" dueDate="2018-9-20" dueTime="11:00" finishedOn="" finishedAt="">
             <Description>التواصل مع المدقق</Description>
             <Attachments>
-                <Attachment path=""></Attachment>
+                <Attachment path=""/>
             </Attachments>
             <AssigneeNotes>
-                <Note addedOn="" addedAt=""></Note>
+                <Note addedOn="" addedAt=""/>
             </AssigneeNotes>
             <Progress val="100" date="" time="">
-                <Note></Note>
+                <Note/>
             </Progress>
-            <Evaluation></Evaluation>
+            <Evaluation/>
         </Task>
-        <Task id="7.2" assignedOn="2018-9-3" assignedAt="" dueDate="2018-9-10" finishedOn="" finishedAt="">
+        <Task id="7.2" assignedOn="2018-9-3" assignedAt="" dueDate="2018-9-10" dueTime="16:00" finishedOn="" finishedAt="">
             <Description>حصر المعدات الإلكترونية</Description>
             <Attachments>
-                <Attachment path=""></Attachment>
+                <Attachment path=""/>
             </Attachments>
             <AssigneeNotes>
-                <Note addedOn="" addedAt=""></Note>
+                <Note addedOn="" addedAt=""/>
             </AssigneeNotes>
             <Progress val="70" date="" time="">
-                <Note></Note>
+                <Note/>
             </Progress>
-            <Evaluation></Evaluation>
+            <Evaluation/>
         </Task>
-        <Task id="7.3" assignedOn="2018-9-5" assignedAt="" dueDate="2018-10-12" finishedOn="" finishedAt="">
+        <Task id="7.3" assignedOn="2018-9-5" assignedAt="" dueDate="2018-10-12" dueTime="13:30" finishedOn="" finishedAt="">
             <Description>تعديل كود برنامج إدارةالمهام</Description>
             <Attachments>
-                <Attachment path=""></Attachment>
+                <Attachment path=""/>
             </Attachments>
             <AssigneeNotes>
-                <Note addedOn="" addedAt=""></Note>
+                <Note addedOn="" addedAt=""/>
             </AssigneeNotes>
             <Progress val="10" date="" time="">
-                <Note></Note>
+                <Note/>
             </Progress>
-            <Evaluation></Evaluation>
+            <Evaluation/>
         </Task>
     </EmployeeTasks>
     

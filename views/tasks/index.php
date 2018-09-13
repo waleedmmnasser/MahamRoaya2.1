@@ -10,12 +10,14 @@
     <input id="fromTaskDate" type="date" name="fromTaskDate" disabled />
     <label style="font-size:17px">إلى تاريخ </label>
     <input id="toTaskDate" type="date" name="toTaskDate" disabled />
-    <input id="showDatedTasks" type='button' value="اعرض" disabled/>
+    <button class="w3-btn w3-white w3-border w3-round-large" id="showDatedTasks" style="font-size:17px; font-weight:bold" disabled>
+        اعرض
+    </button>
 </div>
 <br>
 <div id="table-wrapper">
     <div id="table-scroll">
-        <table style="width:1000px">
+        <table class="w3-table w3-bordered">
             <thead>
                 <tr>
                     <th>وصف المهمة</th>
@@ -48,7 +50,7 @@
     </select>
     <br><br>
     <label>مهام الموظف</label>
-    <table style="width:100%">
+    <table class="w3-table w3-bordered">
         <thead>
         <tr>
             <th>وصف المهمة</th>
@@ -62,13 +64,19 @@
         </thead>
         <tbody id="subOrdTasksTblBody"></tbody>
     </table>
-    <br>
-    <label>لإضافة مهمة جديدة</label>
-    <div>
-        <label>الوصف</label><input id="taskDesc" type="text" name="taskDesc" /><br>
-        <label>التاريخ المحدد للتسليم</label><input id="taskDueDate" type="date" name="taskDueDate" /><br>
-        <label>ملاحظات</label><input id="taskNote" type="text" name="taskNote" /><br>
-        <input id="addNewTask" type="button" value="أضف" />
+    <br><br><br>
+    <div style="width:60%">
+        <div class="w3-border">
+            <div class="w3-container w3-blue">
+                <h3>لإضافة مهمة جديدة</h3>
+            </div>
+            <form class="w3-container">
+                <label>الوصف</label><input class="w3-input" id="taskDesc" type="text" name="taskDesc" /><br>
+                <label>التاريخ المحدد للتسليم</label><input class="w3-input" id="taskDueDate" type="date" name="taskDueDate" /><br>
+                <label>ملاحظات</label><input class="w3-input" id="taskNote" type="text" name="taskNote" /><br>
+                <button id="addNewTask" class="w3-btn w3-white w3-border w3-round-large">أضف</button>
+            </form>
+        </div>
     </div>
     <div id="taskAdditionMsg"></div>
 <?php } ?>

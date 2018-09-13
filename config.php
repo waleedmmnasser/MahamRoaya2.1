@@ -1,10 +1,10 @@
 <?php
 
 // Always provide a TRAILING SLASH (/) AFTER A PATH
-define('URL', 'http://localhost:8115/mahamroaya2/');
+define('URL', 'http://localhost:8115/mahamroaya2.1/');
 define('LIBS', 'libs/');
 define('DATA', 'data/');
-define('LOGGEDINFLAG', 'loggedIn66');
+define('LOGGEDINFLAG', 'loggedIn67');
 
 define('DB_TYPE', 'mysql');
 define('DB_HOST', 'localhost');

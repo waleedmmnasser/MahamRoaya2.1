@@ -114,8 +114,12 @@ class Tasks extends Controller
     {
         $empTasks = XmlHelper::getEmployeeCurrentTasks($_POST["subEmpId"]);
 
-        if (!is_null($empTasks) && $empTasks->length > 0)
+        //echo "<br> No. of tasks: " . count($empTasks);
+
+        if (!is_null($empTasks) && count($empTasks) > 0)
         {
+            $theTasks = "";
+
             foreach($empTasks as $emTk)
             {
                 /*
@@ -180,14 +184,14 @@ class Tasks extends Controller
     {
         try
         {
-            echo "<br>Into addNewTaskForSubordinate: " . $_POST["subOrdId"];
+            //echo "<br>Into addNewTaskForSubordinate: " . $_POST["subOrdId"];
 
             $newTask = new Task();
             $newTask->setEmpId($_POST["subOrdId"]);
             $newTask->setDescription($_POST["desc"]); $newTask->setDueDate($_POST["dueDate"]);
             $newTask->setDueTime($_POST["dueTime"]); $newTask->setNotes($_POST["notes"]);
 
-            echo "<br> Calling assignnewTask...";
+            //echo "<br> Calling assignnewTask...";
 
             if (XmlHelper::assignNewTask($newTask))
                 echo "حفظت المهمة بنجاح";

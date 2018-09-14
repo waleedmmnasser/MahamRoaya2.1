@@ -193,6 +193,9 @@ class XmlHelper
 
             if ($subEmpsElms->length > 0)
             {
+                $emp = new Employee('(اختر أحد الموظفين)', '', ''); $emp->setId(0);
+                $subordinates[] = $emp;
+
                 foreach($subEmpsElms as $empElm)
                 {
                     $fnm = $empElm->getAttribute('firstName');
@@ -235,43 +238,48 @@ class XmlHelper
     {
         try
         {
-            echo "<br> Into assign: " .  $newTask->getEmpId();
+            //echo "<br> Into assign: " .  $newTask->getEmpId();
 
             $empId = $newTask->getEmpId(); $empHasTasks = false;
 
-            $empElms = self::$empsPath->query("//EmployeesTasks/EmployeeTasks[@empId='" . $empId . "']");
+            $empTasksElms = self::$tasksPath->query("//EmployeesTasks/EmployeeTasks[@empId=" . $empId . "]");
 
-            var_dump($empElms);
-            
+            //var_dump($empElms);
+
+            //var_dump($empElms->item(0));
+
             $theEmpElm = null; $idPart = 0;
 
-            if ($empElms->count() > 0)
+            if ($empTasksElms != null && $empTasksElms->item(0) != null)
             {
-                echo "<br>Getting last task id...";
+                //echo "<br>Getting last task id...";
 
-                $theEmpElm = $empElms->item(0);
+                $theEmpElm = $empTasksElms->item(0);
 
-                if ($theEmpElm->childNodes->length > 0)
+                $empTasks = $theEmpElm->getElementsByTagName("Task");
+
+                //echo "<br> Last: " . $empTasks->item($empTasks->length - 1)->getAttribute("id");
+
+                if ($empTasks->length > 0)
                 {
-                    $lastTask = $theEmpElm->lastChild;
-                    $lastTaskId = $lastTask->getAttribute("id");
+                    $lastTaskId = $empTasks->item($empTasks->length - 1)->getAttribute("id");
                     $idPart = intval(explode('.', $lastTaskId)[1]);
                 }
             }
             else
             {
-                echo "<br>Creating element for emp...";
+                //echo "<br>Creating element for emp...";
 
                 $theEmpElm = self::$tasksDoc->createElement('EmployeeTasks');
                 $theEmpElm->setAttribute("empId", $empId);
-                self::$tasksDoc->firstChild->appendChild($theEmpElm);
+                self::$tasksDoc->documentElement->appendChild($theEmpElm);
             }
             
-            echo "<br>Creating task element...";
+            //echo "<br>Creating task element...";
 
             $newId = $idPart + 1;
             $newTaskElm = self::$tasksDoc->createElement('Task');
-            $newTaskElm->setAttribute('id', $empId . $newId);
+            $newTaskElm->setAttribute('id', $empId . '.' . $newId);
             $newTaskElm->setAttribute('assignedOn', date('Y-n-j'));
             $newTaskElm->setAttribute('assignedAt', date('G:i:s'));
             $newTaskElm->setAttribute('dueDate', $newTask->getDueDate());
@@ -295,11 +303,16 @@ class XmlHelper
                 $newTaskElm->appendChild($attachmentsElm);
             }
 
-            echo "<br>Appending task to emp tasks...";
+            $newTaskElm->appendChild(self::$tasksDoc->createElement('AssigneeNotes'));
+
+            $prgElm = self::$tasksDoc->createElement('Progress'); $prgElm->setAttribute("val", "0");
+            $newTaskElm->appendChild($prgElm);
+
+            //echo "<br>Appending task to emp tasks...";
 
             $theEmpElm->appendChild($newTaskElm);
 
-            echo "<br>Saving doc...";
+            //echo "<br>Saving doc...";
 
             self::$tasksDoc->save("data/EmployeesTasks.xml");
             
@@ -351,6 +364,8 @@ class XmlHelper
     {
         try
         {
+            //echo "<br> Into. EmpId: " . $empId;
+
             $empTasksElms = self::$tasksPath->query("//EmployeesTasks/EmployeeTasks[@empId=" . $empId . "]");
 
             if ($empTasksElms != null && $empTasksElms->item(0) != null 
@@ -361,12 +376,17 @@ class XmlHelper
                 $theTasksElms = $empTasksElms->item(0)->getElementsByTagName("Task");
                 //var_dump($theTasksElms);
 
+                //echo "<br> Found: " . $theTasksElms->length;
+
                 $empTasks = array();
 
                 foreach($theTasksElms as $taskElm)
                 {
+                    $taskPrg = 0;
+
                     $taskPrgElm = self::getXmlElm($taskElm, "Progress");
-                    $taskPrg = $taskPrgElm->getAttribute("val");
+                    if ($taskPrgElm != null)
+                        $taskPrg = $taskPrgElm->getAttribute("val");
 
                     if (strcmp($taskPrg, "100") != 0)
                         $empTasks[] = self::createTask($taskElm);

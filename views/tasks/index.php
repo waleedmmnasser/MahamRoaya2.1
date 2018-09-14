@@ -39,13 +39,13 @@
 <label style="font-weight:bold; font-size:18px; text-decoration:underline">مهام الموظفين التابعين لك</label>
 <br><br>
 <?php if ($this->isManager) { ?>
-    <label>اختر أحد الموظفين</label>
-    <select id="subordinatesList" name="subordinatesList">
+    <select id="subordinatesList" class="w3-border" style="width:15%; font-size:15" name="subordinatesList">
         <?php
             foreach($this->subEmps as $emp)
-                echo "<option value='" . $emp->getId() . "'>" . $emp->getFullName() . "</option>";
+                echo "<input type='checkbox' value='" . $emp->getId() . "'>" . $emp->getFullName();// . "</option>";
         ?>
     </select>
+    (بإمكانك تكليف موظفين اثنين أو أكثر بمهمة واحدة من خلال اختيار أكثر من موظف)
     <br><br>
     <label>مهام الموظف</label>
     <table class="w3-table w3-bordered">
@@ -53,7 +53,7 @@
         <tr>
             <th>وصف المهمة</th>
             <th>تاريخ التكليف</th>
-            <th>التاريخ المحدد للتسليم</th>
+            <th>موعد التسليم</th>
             <th>نسبة الإنجاز</th>
             <th>ملاحظات</th>
             <th>تأجيل</th>
@@ -63,19 +63,25 @@
         <tbody id="subOrdTasksTblBody"></tbody>
     </table>
     <br><br><br>
-    <div id="newSubOrdTaskDiv" style="width:60%" disabled>
+    <div id="newSubOrdTaskDiv" style="width:60%">
         <div class="w3-border">
             <div class="w3-container w3-blue">
-                <h3>لإضافة مهمة جديدة</h3>
+                <h4>لإضافة مهمة جديدة لأحد مرؤوسيك</h4>
             </div>
-            <form class="w3-container">
+            <form id="newTaskForm" class="w3-container">
                 <label>الوصف</label><input class="w3-input" id="taskDesc" type="text" name="taskDesc" /><br>
-                <label>ساعة التسليم</label><input class="w3-input" id="taskDueTime" type="time" name="taskDueTime" /><br>
-                <label>التاريخ المحدد للتسليم</label><input class="w3-input" id="taskDueDate" type="date" name="taskDueDate" /><br>
-                <label>ملاحظات</label><input class="w3-input" id="taskNote" type="text" name="taskNote" /><br>
-                <button id="addSubordNewTask" class="w3-btn w3-white w3-border w3-round-large">أضف</button>
+                <div class="w3-cell-row">
+                    <div class="w3-cell">
+                        <label>ساعة التسليم</label><input class="w3-input" id="taskDueTime" type="time" name="taskDueTime" />
+                    </div>
+                    <div class="w3-cell">
+                        <label>التاريخ المحدد للتسليم</label><input class="w3-input" id="taskDueDate" type="date" name="taskDueDate" /><br>
+                    </div>
+                </div>
+                <label>ملاحظات</label><input class="w3-input" id="taskNote" type="text" name="taskNote" />
             </form>
         </div>
+        <button id="addSubordNewTask" class="w3-btn w3-white w3-border w3-round-large">أضف المهمة</button>
     </div>
     <div id="taskAdditionMsg"></div>
 <?php } ?>
@@ -84,29 +90,32 @@
     $(function(){
         $("#subordinatesList").change(function(){
             //alert($("#subordinatesList option:selected").val());
+            subOrdId = $("#subordinatesList option:selected").val();
 
-            $("#newSubOrdTaskDiv").prop("disabled", false);
+            if (subOrdId > 0) {
+                $("#newSubOrdTaskDiv").prop("disabled", false);
 
-            $.ajax({
-                    type: "POST",
-                    url: "tasks/getSubordinateCurrentTasks",
-                    //contentType: "application/json; charset=utf-8",
-                    data: "subEmpId=" + $("#subordinatesList option:selected").val(),
-                    //dataType: "json",
-                })
-                .done(function(data) {
-                    //alert("Ajax done");
-                    //alert(data);
-                    if (!data.includes("<script>"))
-                        $("#subOrdTasksTblBody").html(data);
-                })
-                .fail(function(jqXHR, textStatus, errorThrown) {
-                    alert("Ajax failed");
-                    //var err = eval("(" + jqXHR.responseText + ")");
-                    //alert(err.Message);
-                    //jQuery.parseJSON(jqXHR.responseText);
-                    alert(errorThrown);
-                });
+                $.ajax({
+                        type: "POST",
+                        url: "tasks/getSubordinateCurrentTasks",
+                        //contentType: "application/json; charset=utf-8",
+                        data: "subEmpId=" + subOrdId,
+                        //dataType: "json",
+                    })
+                    .done(function(data) {
+                        //alert("Ajax done");
+                        //alert(data);
+                        if (!data.includes("<script>"))
+                            $("#subOrdTasksTblBody").html(data);
+                    })
+                    .fail(function(jqXHR, textStatus, errorThrown) {
+                        alert("Ajax failed");
+                        //var err = eval("(" + jqXHR.responseText + ")");
+                        //alert(err.Message);
+                        //jQuery.parseJSON(jqXHR.responseText);
+                        alert(errorThrown);
+                    });
+            }
         });
 
         $("#updateTasks").click(function(){
@@ -156,7 +165,7 @@
         $("#addSubordNewTask").click(function(){
             try {
                 $("#taskAdditionMsg").html('');
-                alert("Saving subord task...");
+                //alert("Saving subord task...");
                 //alert($("#subordinatesList option:selected").attr("value"));
 
                 var newTaskInfo = "subOrdId=" + $("#subordinatesList option:selected").val()
@@ -165,7 +174,7 @@
                                 + "&dueTime=" + $("#taskDueTime").val() 
                                 + "&notes=" + $("#taskNote").val();
                 
-                alert("Task: " + newTaskInfo);
+                //alert("Task: " + newTaskInfo);
                 
                 $.ajax({
                     type: "POST",
@@ -175,8 +184,8 @@
                     //dataType: "json",
                 })
                 .done(function(data) {
-                    alert("Back from server");
-                    alert(data);
+                    //alert("Back from server");
+                    //alert(data);
                     if (!data.includes("<script>"))
                         $("#taskAdditionMsg").html(data);
                 })

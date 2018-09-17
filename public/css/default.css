@@ -90,3 +90,6 @@ form br {clear: left;}
     width:35%;
     border:1px solid black;
 }
+.boldtext {
+    font-weight:bold;
+}

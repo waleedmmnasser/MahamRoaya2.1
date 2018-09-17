@@ -42,7 +42,8 @@
     <select id="subordinatesList" class="w3-border" style="width:15%; font-size:15" name="subordinatesList">
         <?php
             foreach($this->subEmps as $emp)
-                echo "<input type='checkbox' value='" . $emp->getId() . "'>" . $emp->getFullName();// . "</option>";
+                //echo "<input type='checkbox' value='" . $emp->getId() . "'>" . $emp->getFullName();// . "</option>";
+                echo "<option value='" . $emp->getId() . "'><div>" . $emp->getFullName() . "</div></option>";
         ?>
     </select>
     (بإمكانك تكليف موظفين اثنين أو أكثر بمهمة واحدة من خلال اختيار أكثر من موظف)
@@ -66,22 +67,34 @@
     <div id="newSubOrdTaskDiv" style="width:60%">
         <div class="w3-border">
             <div class="w3-container w3-blue">
-                <h4>لإضافة مهمة جديدة لأحد مرؤوسيك</h4>
+                <h4>لإضافة مهمة جديدة <label id="assigneeNameLbl"></label></h4>
             </div>
             <form id="newTaskForm" class="w3-container">
-                <label>الوصف</label><input class="w3-input" id="taskDesc" type="text" name="taskDesc" /><br>
+                <label style="font-weight:bold">الوصف</label><input class="w3-input" id="taskDesc" type="text" name="taskDesc" /><br>
                 <div class="w3-cell-row">
                     <div class="w3-cell">
-                        <label>ساعة التسليم</label><input class="w3-input" id="taskDueTime" type="time" name="taskDueTime" />
+                        <label style="font-weight:bold">ساعة التسليم</label><input class="w3-input" id="taskDueTime" type="time" name="taskDueTime" />
                     </div>
                     <div class="w3-cell">
-                        <label>التاريخ المحدد للتسليم</label><input class="w3-input" id="taskDueDate" type="date" name="taskDueDate" /><br>
+                        <label style="font-weight:bold">تاريخ التسليم</label><input class="w3-input" id="taskDueDate" type="date" name="taskDueDate" /><br>
                     </div>
                 </div>
-                <label>ملاحظات</label><input class="w3-input" id="taskNote" type="text" name="taskNote" />
+                <div class="w3-cell-row">
+                    <div class="w3-cell">
+                        <button class="w3-btn w3-border w3-round-large" style="position:relative; overflow:hidden">
+                            <span for="taskAttachment">أضف مرفقاً ...</span>
+                            <input style="position:absolute; top=0; botton:0; left:0; right:0; opacity:0.001" id="taskAttachment" type="file" name="taskAttachment" />
+                        </button>
+                    </div>
+                    <div class="w3-cell">
+                        <label style="font-weight:bold">قائمة المرفقات</label>
+                        <ul class="w3-ul w3-border" id="taskAttachments"></ul>
+                    </div>
+                </div>
+                <label style="font-weight:bold">ملاحظات</label><input class="w3-input" id="taskNote" type="text" name="taskNote" />
             </form>
         </div>
-        <button id="addSubordNewTask" class="w3-btn w3-white w3-border w3-round-large">أضف المهمة</button>
+        <button id="addSubordNewTask" class="w3-btn w3-blue w3-border w3-round-large w3-large">أضف المهمة</button>
     </div>
     <div id="taskAdditionMsg"></div>
 <?php } ?>
@@ -94,6 +107,7 @@
 
             if (subOrdId > 0) {
                 $("#newSubOrdTaskDiv").prop("disabled", false);
+
 
                 $.ajax({
                         type: "POST",
@@ -297,6 +311,30 @@
                     //jQuery.parseJSON(jqXHR.responseText);
                     alert(errorThrown);
                 });
+            }
+            catch(err) {
+                alert("Error");
+                alert(err.message);
+            }
+        });
+
+        $("#taskAttachment").change(function() {
+            try {
+                var fileData = $('#taskAttachment').prop('files')[0];
+
+                //alert(fileData); alert(fileData.name);
+                var formData = new FormData();
+                formData.append('attachment', fileData);
+
+                for (var prp in fileData)
+                    alert(prp);
+                //alert(formData);
+                
+                var filesListHtml = $("#taskAttachments").html();
+
+                filesListHtml += "<li>" + fileData.name + "</li>";
+
+                $("#taskAttachments").html(filesListHtml);
             }
             catch(err) {
                 alert("Error");

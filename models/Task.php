@@ -2,8 +2,13 @@
 
 class Task
 {
-    private $id, $empId, $assignDate, $assignTime, $dueDate, $dueTime, $description;
+    private $id, $empId, $sharedWithIds, $assignDate, $assignTime, $dueDate, $dueTime, $description;
     private $attachments, $progress, $notes;
+
+    function __construct()
+    {
+        $this->sharedWithIds = array();
+    }
 
     /**
      * Get the value of id
@@ -41,6 +46,26 @@ class Task
     public function setEmpId($empId)
     {
         $this->empId = $empId;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of sharedWithIds
+     */ 
+    public function getSharedWithIds()
+    {
+        return $this->sharedWithIds;
+    }
+
+    /**
+     * Set the value of sharedWithIds
+     *
+     * @return  self
+     */ 
+    public function setSharedWithIds($strSharedWithIds)
+    {
+        $this->sharedWithIds = explode(',', $strSharedWithIds);
 
         return $this;
     }

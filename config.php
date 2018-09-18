@@ -4,7 +4,7 @@
 define('URL', 'http://localhost:8115/mahamroaya2.1/');
 define('LIBS', 'libs/');
 define('DATA', 'data/');
-define('LOGGEDINFLAG', 'loggedIn87');
+define('LOGGEDINFLAG', 'loggedIn88');
 
 define('DB_TYPE', 'mysql');
 define('DB_HOST', 'localhost');

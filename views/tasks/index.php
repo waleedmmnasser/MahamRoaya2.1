@@ -39,13 +39,14 @@
 <label style="font-weight:bold; font-size:18px; text-decoration:underline">مهام الموظفين التابعين لك</label>
 <br><br>
 <?php if ($this->isManager) { ?>
-    <select id="subordinatesList" class="w3-border" style="width:15%; font-size:15" name="subordinatesList">
+    <ul id="subordinatesList" class="w3-ul w3-border" style="width:15%; font-size:15" name="subordinatesList">
         <?php
             foreach($this->subEmps as $emp)
                 //echo "<input type='checkbox' value='" . $emp->getId() . "'>" . $emp->getFullName();// . "</option>";
-                echo "<option value='" . $emp->getId() . "'><div>" . $emp->getFullName() . "</div></option>";
+                //echo "<li value='" . $emp->getId() . "'><div>" . $emp->getFullName() . "</div></option>";
+                echo "<li><div class='w3-cell-row'><div class='w3-cell'><input type='checkbox' name='subOrdCheckBox' data-empid=" . $emp->getId() . "> " . $emp->getFullName() . "</div><div class='w3-cell'><button id='getSubOrdTasksBtn' data-empid='" . $emp->getId() . "' class='w3-btn w3-white w3-border' style='height:10' onclick='getSubOrdTasks(" . $emp->getId() . ");' title='اعرض المهام'><img src='". URL ."public/images/MenuIcon.png' width='15'></button></div></div></li>";
         ?>
-    </select>
+    </ul>
     (بإمكانك تكليف موظفين اثنين أو أكثر بمهمة واحدة من خلال اختيار أكثر من موظف)
     <br><br>
     <label>مهام الموظف</label>
@@ -100,6 +101,36 @@
 <?php } ?>
 
 <script>
+    function getSubOrdTasks(subOrdId) {
+        //alert("Emp Id: " + aBtn.data('empid'));
+        //alert(subOrdId);
+        
+        $.ajax({
+                type: "POST",
+                url: "tasks/getSubordinateCurrentTasks",
+                //contentType: "application/json; charset=utf-8",
+                data: "subEmpId=" + subOrdId,
+                //dataType: "json",
+            })
+            .done(function(data) {
+                //alert("Ajax done");
+                //alert(data);
+                if (!data.includes("<script>"))
+                    $("#subOrdTasksTblBody").html(data);
+            })
+            .fail(function(jqXHR, textStatus, errorThrown) {
+                alert("Ajax failed");
+                //var err = eval("(" + jqXHR.responseText + ")");
+                //alert(err.Message);
+                //jQuery.parseJSON(jqXHR.responseText);
+                alert(errorThrown);
+            });
+    };
+
+    function subOrdChanged(chkbx, subOrdId) {
+        alert(subOrId); alert(chkbx.checked);
+    }
+
     $(function(){
         $("#subordinatesList").change(function(){
             //alert($("#subordinatesList option:selected").val());
@@ -178,6 +209,14 @@
 
         $("#addSubordNewTask").click(function(){
             try {
+                //alert("Saving...");
+    
+                var allCheckBoxes = document.getElementsByName("subOrdCheckBox");
+
+                for(var i=0; i < allCheckBoxes.length; i++) {
+                    alert(allCheckBoxes[i].checked); alert(allCheckBoxes[i].getAttribute("data-empid"));
+                }
+                /*
                 $("#taskAdditionMsg").html('');
                 //alert("Saving subord task...");
                 //alert($("#subordinatesList option:selected").attr("value"));
@@ -210,6 +249,7 @@
                     //jQuery.parseJSON(jqXHR.responseText);
                     alert(errorThrown);
                 });
+                */
             }
             catch(err) {
                 alert("Error");

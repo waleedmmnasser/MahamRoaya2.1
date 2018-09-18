@@ -193,8 +193,8 @@ class XmlHelper
 
             if ($subEmpsElms->length > 0)
             {
-                $emp = new Employee('(اختر أحد الموظفين)', '', ''); $emp->setId(0);
-                $subordinates[] = $emp;
+                //$emp = new Employee('(اختر أحد الموظفين)', '', ''); $emp->setId(0);
+                //$subordinates[] = $emp;
 
                 foreach($subEmpsElms as $empElm)
                 {
@@ -235,6 +235,96 @@ class XmlHelper
     }
 
     public static function assignNewTask($newTask)
+    {
+        try
+        {
+            //echo "<br> Into assign: " .  $newTask->getEmpId();
+
+            $empId = $newTask->getEmpId(); $empHasTasks = false;
+
+            $empTasksElms = self::$tasksPath->query("//EmployeesTasks/EmployeeTasks[@empId=" . $empId . "]");
+
+            //var_dump($empElms);
+
+            //var_dump($empElms->item(0));
+
+            $theEmpElm = null; $idPart = 0;
+
+            if ($empTasksElms != null && $empTasksElms->item(0) != null)
+            {
+                //echo "<br>Getting last task id...";
+
+                $theEmpElm = $empTasksElms->item(0);
+
+                $empTasks = $theEmpElm->getElementsByTagName("Task");
+
+                //echo "<br> Last: " . $empTasks->item($empTasks->length - 1)->getAttribute("id");
+
+                if ($empTasks->length > 0)
+                {
+                    $lastTaskId = $empTasks->item($empTasks->length - 1)->getAttribute("id");
+                    $idPart = intval(explode('.', $lastTaskId)[1]);
+                }
+            }
+            else
+            {
+                //echo "<br>Creating element for emp...";
+
+                $theEmpElm = self::$tasksDoc->createElement('EmployeeTasks');
+                $theEmpElm->setAttribute("empId", $empId);
+                self::$tasksDoc->documentElement->appendChild($theEmpElm);
+            }
+            
+            //echo "<br>Creating task element...";
+
+            $newId = $idPart + 1;
+            $newTaskElm = self::$tasksDoc->createElement('Task');
+            $newTaskElm->setAttribute('id', $empId . '.' . $newId);
+            $newTaskElm->setAttribute('assignedOn', date('Y-n-j'));
+            $newTaskElm->setAttribute('assignedAt', date('G:i:s'));
+            $newTaskElm->setAttribute('dueDate', $newTask->getDueDate());
+            $newTaskElm->setAttribute('dueTime', $newTask->getDueTime());
+
+            $descElm = self::$tasksDoc->createElement('Description', $newTask->getDescription());
+            $newTaskElm->appendChild($descElm);
+
+            if (!is_null($newTask->getAttachments()))
+            {
+                $attachmentsElm = self::$tasksDoc->createElement('Attachments');
+
+                foreach($newTask->getAttachments() as $attch)
+                {
+                    $attchElm = self::$tasksDoc->createElement('Attachment');
+                    $attchElm->setAttribute('path', $attch->getPath());
+
+                    $attachmentsElm->appendChild($attchElm);
+                }
+
+                $newTaskElm->appendChild($attachmentsElm);
+            }
+
+            $newTaskElm->appendChild(self::$tasksDoc->createElement('AssigneeNotes'));
+
+            $prgElm = self::$tasksDoc->createElement('Progress'); $prgElm->setAttribute("val", "0");
+            $newTaskElm->appendChild($prgElm);
+
+            //echo "<br>Appending task to emp tasks...";
+
+            $theEmpElm->appendChild($newTaskElm);
+
+            //echo "<br>Saving doc...";
+
+            self::$tasksDoc->save("data/EmployeesTasks.xml");
+            
+            return true;
+        }
+        catch(Exception $e)
+        {
+            return false;
+        }
+    }
+
+    public static function assignNewSharedTask($newTask)
     {
         try
         {
@@ -510,6 +600,8 @@ class XmlHelper
             $taskPrgElm = self::getXmlElm($taskElm, "Progress");
             $taskPrg = $taskPrgElm->getAttribute("val");
 
+            $sharedWithElm = self::getXmlElm($taskElm, "SharedWith");
+
             $aTask = new Task;
 
             $aTask->setId($taskElm->getAttribute("id"));
@@ -518,6 +610,9 @@ class XmlHelper
             $aTask->setDueTime($taskElm->getAttribute("dueTime"));
             $aTask->setDescription(self::getXmlElmVal($taskElm, "Description"));
             $aTask->setProgress($taskPrg);
+
+            if ($sharedWithElm != null)
+                $aTask->setSharedWithIds($sharedWithElm->getAttribute("otherEmps"));
 
             return $aTask;
         }
@@ -531,7 +626,9 @@ class XmlHelper
     {
         try
         {
-            return $parent->getElementsByTagName($tagName)[0];
+            $xmlElms = $parent->getElementsByTagName($tagName);
+
+            return ($xmlElms != null && $xmlElms->length > 0) ? $xmlElms[0] : null;
         }
         catch(Exception $e)
         {

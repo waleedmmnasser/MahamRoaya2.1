@@ -1,10 +1,12 @@
 <!doctype html>
 <html dir="rtl">
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 <head>
     <title><?=(isset($this->title)) ? $this->title : 'إدارة المهام -- مؤسسة رؤية'; ?></title>
     <link rel="stylesheet" href="<?php echo URL; ?>public/css/default.css" />
     <link rel="stylesheet" href="<?php echo URL; ?>public/css/w3.css">
+    <link rel="stylesheet" href="<?php echo URL; ?>public/css/font-awesome.min.css">
     <!--<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.17/themes/sunny/jquery-ui.css" />-->
     <script type="text/javascript" src="<?php echo URL; ?>public//js/jquery-3-3-1.min.js"></script>
     <script type="text/javascript" src="<?php echo URL; ?>public/js/jquery-ui-1-12-1.min.js"></script>
